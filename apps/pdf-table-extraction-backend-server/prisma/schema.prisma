@@ -1,0 +1,51 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model TablaExtraida {
+  archivoPdf     ArchivoPdf? @relation(fields: [archivoPdfId], references: [id])
+  archivoPdfId   String?
+  contenidoTabla Json?
+  createdAt      DateTime    @default(now())
+  id             String      @id @default(cuid())
+  numeroColumnas Int?
+  numeroFilas    Int?
+  updatedAt      DateTime    @updatedAt
+}
+
+model ResultadoOcr {
+  archivoPdf        ArchivoPdf? @relation(fields: [archivoPdfId], references: [id])
+  archivoPdfId      String?
+  createdAt         DateTime    @default(now())
+  id                String      @id @default(cuid())
+  lenguajeDetectado String?
+  textoExtraido     String?
+  updatedAt         DateTime    @updatedAt
+}
+
+model Proceso {
+  archivoPdf   ArchivoPdf? @relation(fields: [archivoPdfId], references: [id])
+  archivoPdfId String?
+  createdAt    DateTime    @default(now())
+  estado       String?
+  id           String      @id @default(cuid())
+  mensajeError String?
+  updatedAt    DateTime    @updatedAt
+}
+
+model ArchivoPdf {
+  createdAt      DateTime        @default(now())
+  formato        String?
+  id             String          @id @default(cuid())
+  nombreArchivo  String?
+  procesos       Proceso[]
+  resultadoOcrs  ResultadoOcr[]
+  tablaExtraidas TablaExtraida[]
+  tamano         Int?
+  updatedAt      DateTime        @updatedAt
+}
